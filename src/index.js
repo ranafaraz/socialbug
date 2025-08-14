@@ -1,12 +1,21 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { redis, postQueue } from './queue.js';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 app.use(express.json());
 
+// Rate limiter for user registration endpoint
+const createUserLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // limit each IP to 20 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
 // Register a new workspace/user
-app.post('/users', async (_req, res) => {
+app.post('/users', createUserLimiter, async (_req, res) => {
   const id = uuidv4();
   await redis.sadd('users', id);
   res.json({ id });
