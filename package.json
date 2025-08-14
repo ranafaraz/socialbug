@@ -1,0 +1,19 @@
+{
+  "name": "socialbug",
+  "version": "0.1.0",
+  "description": "Automation platform for scheduling social media posts.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"No tests\" && exit 0"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0",
+    "bull": "^4.11.5",
+    "ioredis": "^5.3.2",
+    "uuid": "^9.0.1"
+  }
+}
