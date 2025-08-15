@@ -2,7 +2,6 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { redis, postQueue } from './queue.js';
 import rateLimit from 'express-rate-limit';
-
 const app = express();
 app.use(express.json());
 
@@ -23,6 +22,7 @@ app.post('/users', createUserLimiter, async (_req, res) => {
 
 // Add a WordPress account under a user workspace
 app.post('/users/:userId/accounts', async (req, res) => {
+
   const { name, siteUrl, username, password, basePrompt } = req.body;
   if (!name || !siteUrl || !username || !password || !basePrompt) {
     return res.status(400).json({ error: 'Missing fields' });
@@ -34,6 +34,7 @@ app.post('/users/:userId/accounts', async (req, res) => {
 
 // Schedule a post for a specific account
 app.post('/users/:userId/accounts/:name/schedule', async (req, res) => {
+
   const { topic, publishAt } = req.body;
   if (!topic || !publishAt) {
     return res.status(400).json({ error: 'Missing fields' });
@@ -65,6 +66,7 @@ async function generateContent(basePrompt, topic) {
   const prompt = `${basePrompt} ${topic}`;
   if (!apiKey) {
     await redis.set(cacheKey, prompt, 'EX', 3600);
+
     return prompt;
   }
   const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
@@ -78,6 +80,7 @@ async function generateContent(basePrompt, topic) {
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || prompt;
   await redis.set(cacheKey, text, 'EX', 3600);
   return text;
+
 }
 
 async function postToWordPress(account, content) {

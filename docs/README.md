@@ -29,6 +29,7 @@ The API is multi-tenant. Users first create a workspace, then attach social medi
 - `POST /users/:userId/accounts` – register an account.
 - `POST /users/:userId/accounts/:name/schedule` – schedule a post for an account at a specific timestamp.
 
+
 Alternatively, manage accounts and schedules through the Django admin interface which calls an n8n webhook when saving records.
 
 ## Future Work
