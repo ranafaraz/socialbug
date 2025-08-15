@@ -15,7 +15,7 @@ This wiki provides information on configuring and extending Socialbug. The proje
    ```bash
    docker compose up -d
    ```
-4. Access n8n at `http://localhost:5678`, the scheduling API at `http://localhost:3000`, and the Django admin at `http://localhost:8000/admin`.
+4. Access n8n at `http://localhost:5678`, the scheduling API at `http://localhost:3000`, Redis at `redis://localhost:6379`, and the Django admin at `http://localhost:8000/admin`.
 
 ## Gemini Integration
 
@@ -23,10 +23,12 @@ Set `GEMINI_API_KEY` in your `.env` file. The key will be available to n8n workf
 
 ## Scheduling API
 
-Use the API to register WordPress accounts with base prompts and schedule text posts.
+The API is multi-tenant. Users first create a workspace, then attach social media accounts under it. Jobs are queued in Redis for background processing.
 
-- `POST /accounts` – register an account.
-- `POST /accounts/:name/schedule` – schedule a post for an account.
+- `POST /users` – create a workspace.
+- `POST /users/:userId/accounts` – register an account.
+- `POST /users/:userId/accounts/:name/schedule` – schedule a post for an account at a specific timestamp.
+
 
 Alternatively, manage accounts and schedules through the Django admin interface which calls an n8n webhook when saving records.
 

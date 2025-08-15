@@ -41,9 +41,10 @@ services:
     environment:
       APP_PORT: ${APP_PORT:-3000}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
     depends_on:
-      - postgres
-
+      - redis
+  
   django:
     image: python:3.12-slim
     working_dir: /app
@@ -56,6 +57,10 @@ services:
       N8N_WEBHOOK_URL: ${N8N_WEBHOOK_URL:-http://n8n:5678/webhook/publish}
     depends_on:
       - n8n
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
 
 volumes:
   postgres_data:
